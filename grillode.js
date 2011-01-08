@@ -36,34 +36,36 @@ var template = function(file, vars) {
     return data;
 };
 
-var timestamp = function() {
+var timeStamp = function() {
     var d = new Date();
     var timeParts = [d.getHours(), d.getMinutes(), d.getSeconds()];
-    return timeParts.map(function(t) {
+    var timeStamp = timeParts.map(function(t) {
         return String(t).length == 1 ? '0' + t : t;
     }).join(':');
+    return '[' + timeStamp + '] ';
+};
+
+var log = function(data) {
+    sys.puts(timeStamp) + data;
 };
 
 var message = function(data, from, to) {
-
     if (from) {
         data = from + ': ' + data;
     }
-    var dataText = '[' + timestamp() + '] ' + data;
-    var dataHtml = '<table><tr><td>' + dataText + '</td></tr></table>' + 
+    var text = timeStamp() + data;
+    var html = '<table><tr><td>' + text + '</td></tr></table>' + 
                '<script>onMessage();</script>';
-    
     for (var uuid in sockets) {
         if (sockets[uuid].http) {
             if (sockets[uuid].name) {
-                sockets[uuid].write(dataHtml);
+                sockets[uuid].write(html);
             }
         } else if (sockets[uuid].name && sockets[uuid].name != from) {
-                sockets[uuid].write(dataText + '\n');
+                sockets[uuid].write(text + '\n');
         }
     }
-    sys.puts(data);
-
+    log(data);
 };
 
 var joins = function(name) {

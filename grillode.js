@@ -36,18 +36,21 @@ var template = function(file, vars) {
     return data;
 };
 
-var message = function(data, from, to) {
-
+var timestamp = function() {
     var d = new Date();
-    var time = [d.getHours(), d.getMinutes(), d.getSeconds()].map(function(t) {
+    var timeParts = [d.getHours(), d.getMinutes(), d.getSeconds()];
+    return timeParts.map(function(t) {
         return String(t).length == 1 ? '0' + t : t;
     }).join(':');
+};
+
+var message = function(data, from, to) {
 
     if (from) {
         data = from + ': ' + data;
     }
-    data = '[' + time + '] ' + data;
-    dataHtml = '<table><tr><td>' + data + '</td></tr></table>' + 
+    var dataText = '[' + timestamp() + '] ' + data;
+    var dataHtml = '<table><tr><td>' + dataText + '</td></tr></table>' + 
                '<script>onMessage();</script>';
     
     for (var uuid in sockets) {
@@ -56,7 +59,7 @@ var message = function(data, from, to) {
                 sockets[uuid].write(dataHtml);
             }
         } else if (sockets[uuid].name && sockets[uuid].name != from) {
-                sockets[uuid].write(data + '\n');
+                sockets[uuid].write(dataText + '\n');
         }
     }
     sys.puts(data);

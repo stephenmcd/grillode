@@ -61,6 +61,9 @@ exports.stripTags = stripTags;
 
 
 var uuid = function() {
+    /*
+    Returns a unique ID for each user for retrieving a user's socket.
+    */
     var uuid = '';
     while (uuid.length < 64) {
         uuid += String.fromCharCode(Math.random() * (126 - 33) + 33);
@@ -71,6 +74,11 @@ exports.uuid = uuid;
 
 
 var template = function(file, vars) {
+    /*
+    Returns the contents of the given filename relative to this 
+    script's path, and replaces the mapping of variables given 
+    where each variable name is specified in the format: %name%
+    */
     var data = fs.readFileSync(path.join(__dirname, file)).toString();
     for (var name in vars) {
         data = data.replace('%' + name + '%', vars[name]);
@@ -81,6 +89,9 @@ exports.template = template;
 
 
 var timeStamp = function() {
+    /*
+    Returns the current time in the string format: [HH:MM:SS]
+    */
     var d = new Date();
     var timeParts = [d.getHours(), d.getMinutes(), d.getSeconds()];
     var timeStamp = timeParts.map(function(t) {
@@ -92,6 +103,9 @@ exports.timeStamp = timeStamp;
 
 
 var log = function(data) {
+    /*
+    Writes the given string to the terminal with a timestamp.
+    */
     sys.puts(timeStamp() + data);
 };
 exports.log = log;

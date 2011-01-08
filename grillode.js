@@ -1,12 +1,21 @@
 
-var fs = require('fs'),
-    http = require('http'),
-    net = require('net'),
-    path = require('path'),
-    querystring = require('querystring'),
-    sys = require('sys'),
-    util = require('util');
+var fs = require('fs');
+var http = require('http');
+var htmlparser = require('./htmlparser');
+var net = require('net');
+var path = require('path');
+var querystring = require('querystring');
+var sys = require('sys');
 
+
+var allowedTags = {
+    b: [], 
+    i: [], 
+    img: ['src'], 
+    a: ['href'], 
+    center: [],
+    font: ['face', 'color', 'size'],
+};
 
 var httpInitialStream = '';
 while (httpInitialStream.length < 20000) {
@@ -19,6 +28,59 @@ if (process.argv.length > 2 && !isNaN(process.argv[2])) {
 }
 
 var sockets = {};
+
+var stripTags = function(html, allowed) {
+    /*
+    Strips the given HTML string of all tags, other than those 
+    specified in the ``allowed`` param, which should be in the 
+    format: {tag1: [allowedAttribute1, allowedAttribute2], tag2: []}
+    */
+    
+    // Bail out early if no HTML.
+    if (html.indexOf('<') == -1) {
+        return html;
+    }
+
+    var handler = new htmlparser.DefaultHandler();
+    var parser = new htmlparser.Parser(handler);
+
+    parser.parseComplete(html);
+    allowed = allowed || {};
+
+    var build = function(parts) {
+        /*
+        Takes a list of dom nodes and returns each node as a string 
+        if it's text or an allowed tag. Called recursively on the 
+        node's child nodes.
+        */
+        return parts.map(function(part) {
+            var children = part.children ? build(part.children) : '';
+            switch (part.type) {
+                case 'text':
+                    return part.data;
+                case 'tag':
+                    var attribs = allowed[part.name];
+                    if (typeof attribs != 'undefined') {
+                        attribs = attribs.map(function(name) {
+                            var value = part.attribs[name];
+                            if (value) {
+                                value = value.replace(/"/g, escape('"'));
+                                return ' ' + name + '="' + value + '"';
+                            }
+                            return '';
+                        }).join('');
+                        var start = '<' + part.name + attribs + '>';
+                        var end = '</' + part.name + '>';
+                        return start + children + end;
+                    }
+            }
+            return children;
+        }).join('');
+    };
+
+    return build(handler.dom);
+
+};
 
 var uuid = function() {
     var uuid = '';
@@ -53,15 +115,16 @@ var message = function(data, from, to) {
     if (from) {
         data = from + ': ' + data;
     }
-    var text = timeStamp() + data;
-    var html = template('message.html', {message: text});
+    var text = timeStamp() + stripTags(data);
+    var templateVars = {message: timeStamp() + stripTags(data, allowedTags)};
+    var html = template('message.html', templateVars);
     for (var uuid in sockets) {
         if (sockets[uuid].http) {
             if (sockets[uuid].name) {
                 sockets[uuid].write(html);
             }
         } else if (sockets[uuid].name && sockets[uuid].name != from) {
-                sockets[uuid].write(text + '\n');
+            sockets[uuid].write(text + '\n');
         }
     }
     log(data);

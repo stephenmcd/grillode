@@ -134,4 +134,8 @@ net.createServer(function(socket) {
         }
     });
 
+    socket.on("error", function(e) {
+        log('error: ' + e);
+    });
+
 }).listen(port);

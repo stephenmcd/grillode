@@ -46,7 +46,7 @@ var timeStamp = function() {
 };
 
 var log = function(data) {
-    sys.puts(timeStamp) + data;
+    sys.puts(timeStamp() + data);
 };
 
 var message = function(data, from, to) {

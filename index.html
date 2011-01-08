@@ -20,25 +20,25 @@ Content-type: text/html
     </style>
     <script>
     
-	    try {
-		    var xhr = new ActiveXObject('Microsoft.XmlHttp');
-	    } catch (e) {
-		    try {
-			    var xhr = new XMLHttpRequest();
-		    } catch (e) {}
-	    }
-	    
+        try {
+            var xhr = new ActiveXObject('Microsoft.XmlHttp');
+        } catch (e) {
+            try {
+                var xhr = new XMLHttpRequest();
+            } catch (e) {}
+        }
+        
         var onSubmit = function(form) {
             if (form.button.value == form.button.defaultValue) {
                 form.button.value = 'Send Message';
                 form.leave.style.display = 'inline';
             }
             if (xhr) {
-		        xhr.open('GET', '?uuid=' + form.uuid.value + 
-		                 '&message=' + escape(form.message.value), true);
-		        xhr.send(null);
-		        form.message.value = '';
-		        form.message.focus();
+                xhr.open('GET', '?uuid=' + form.uuid.value + 
+                         '&message=' + escape(form.message.value), true);
+                xhr.send(null);
+                form.message.value = '';
+                form.message.focus();
             }
             return false;
         };

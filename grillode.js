@@ -54,8 +54,7 @@ var message = function(data, from, to) {
         data = from + ': ' + data;
     }
     var text = timeStamp() + data;
-    var html = '<table><tr><td>' + text + '</td></tr></table>' + 
-               '<script>onMessage();</script>';
+    var html = template('message.html', {message: text});
     for (var uuid in sockets) {
         if (sockets[uuid].http) {
             if (sockets[uuid].name) {

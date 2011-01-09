@@ -47,6 +47,32 @@ var leaves = function(name) {
     message(name + ' leaves');
 };
 
+var httpStreamStart = function(socket) {
+    /*
+    Called when a user makes their first HTTP request. Renders the 
+    main template and initiates streaming.
+    */
+    var html = util.template('index.html', {
+        uuid: querystring.escape(socket.uuid)
+    });
+    socket.write(html);
+    var streamer = function(first) {
+        try {
+            if (first) {
+                socket.write(settings.HTTP_INITIAL_STREAM);
+            } else {
+                socket.write('\n');
+            }
+        } catch (e) {
+            return;
+        }
+        setTimeout(streamer, 30000);
+    };
+    setTimeout(function() {
+        streamer(true);
+    }, 1000);
+};
+
 net.createServer(function(socket) {
 
     socket.on("connect", function() {
@@ -79,26 +105,7 @@ net.createServer(function(socket) {
         socket.http = data.indexOf('GET /') == 0;
         if (socket.http) {
             if (data.indexOf('?') == -1) {
-                // Render the main template.
-                var html = util.template('index.html', {
-                    uuid: querystring.escape(socket.uuid)
-                });
-                socket.write(html);
-                var streamer = function(first) {
-                    try {
-                        if (first) {
-                            socket.write(settings.HTTP_INITIAL_STREAM);
-                        } else {
-                            socket.write('\n');
-                        }
-                    } catch (e) {
-                        return;
-                    }
-                    setTimeout(streamer, 30000);
-                };
-                setTimeout(function() {
-                    streamer(true);
-                }, 1000);
+                httpStreamStart(socket);
             } else {
                 // Querystring should contain ``uuid`` and ``message``.
                 var queryAt = data.indexOf('?');

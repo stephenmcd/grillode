@@ -2,6 +2,7 @@
 var fs = require('fs');
 var htmlparser = require('./htmlparser');
 var path = require('path');
+var querystring = require('querystring');
 var sys = require('sys');
 
 
@@ -94,6 +95,19 @@ var template = function(file, vars) {
     return data;
 };
 exports.template = template;
+
+
+var queryStringFromRequest = function(request) {
+    /*
+    Extracts the query string from a HTTP request.
+    */
+    var queryAt = request.indexOf('?');
+    var newLineAt = request.indexOf('\n');
+    var lastSpaceAt = request.lastIndexOf(' ', newLineAt);
+    var qs = request.substr(queryAt + 1, lastSpaceAt - queryAt - 1);
+    return querystring.parse(qs);
+};
+exports.queryStringFromRequest = queryStringFromRequest;
 
 
 var timeStamp = function() {

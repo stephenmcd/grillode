@@ -1,6 +1,5 @@
 
 var net = require('net');
-var querystring = require('querystring');
 var settings = require('./settings.js');
 var util = require('./util.js');
 
@@ -108,11 +107,7 @@ net.createServer(function(socket) {
                 httpStreamStart(socket);
             } else {
                 // Querystring should contain ``uuid`` and ``message``.
-                var queryAt = data.indexOf('?');
-                var newLineAt = data.indexOf('\n');
-                var lastSpaceAt = data.lastIndexOf(' ', newLineAt);
-                data = data.substr(queryAt + 1, lastSpaceAt - queryAt - 1);
-                data = querystring.parse(data);
+                data = queryStringFromRequest(data);
                 if (!sockets[data.uuid].name) {
                     sockets[data.uuid].name = data.message;
                     joins(data.message);

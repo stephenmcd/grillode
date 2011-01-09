@@ -2,6 +2,7 @@
 var fs = require('fs');
 var htmlparser = require('./htmlparser');
 var path = require('path');
+var querystring = require('querystring');
 var sys = require('sys');
 
 
@@ -12,9 +13,18 @@ var stripTags = function(html, allowed) {
     format: {tag1: [allowedAttribute1, allowedAttribute2], tag2: []}
     */
     
+    var escapeHtml = function(html) {
+        /*
+        Replace brackets and quotes with their HTML entities.
+        */
+        return html.replace(/"/g, '&#34;')
+                   .replace(/</g, '&#60;')
+                   .replace(/>/g, '&#62;');
+    };
+
     // Bail out early if no HTML.
-    if (html.indexOf('<') == -1) {
-        return html;
+    if (html.indexOf('<') == -1 || html.indexOf('>') == -1) {
+        return escapeHtml(html);
     }
 
     var handler = new htmlparser.DefaultHandler();
@@ -33,14 +43,14 @@ var stripTags = function(html, allowed) {
             var children = part.children ? build(part.children) : '';
             switch (part.type) {
                 case 'text':
-                    return part.data;
+                    return escapeHtml(part.data);
                 case 'tag':
                     var attribs = allowed[part.name];
                     if (typeof attribs != 'undefined') {
                         attribs = attribs.map(function(name) {
                             var value = part.attribs[name];
                             if (value) {
-                                value = value.replace(/"/g, escape('"'));
+                                value = escapeHtml(value)
                                 return ' ' + name + '="' + value + '"';
                             }
                             return '';
@@ -53,7 +63,6 @@ var stripTags = function(html, allowed) {
             return children;
         }).join('');
     };
-
     return build(handler.dom);
 
 };
@@ -86,6 +95,19 @@ var template = function(file, vars) {
     return data;
 };
 exports.template = template;
+
+
+var queryStringFromRequest = function(request) {
+    /*
+    Extracts the query string from a HTTP request.
+    */
+    var queryAt = request.indexOf('?');
+    var newLineAt = request.indexOf('\n');
+    var lastSpaceAt = request.lastIndexOf(' ', newLineAt);
+    var qs = request.substr(queryAt + 1, lastSpaceAt - queryAt - 1);
+    return querystring.parse(qs);
+};
+exports.queryStringFromRequest = queryStringFromRequest;
 
 
 var timeStamp = function() {

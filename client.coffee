@@ -29,4 +29,5 @@ $ ->
 
     # Go to the homepage when the leave button is clicked.
     $(".leave").click ->
+        socket.disconnect()
         location.href = "/"

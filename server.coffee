@@ -1,25 +1,12 @@
 
-express = require "express"
-util    = require "./util.coffee"
+express  = require "express"
+util     = require "./util.coffee"
+settings = require "./settings.coffee"
 
-
-# Tag/attribs mapping of allowed tags and attributes.
-allowedTags = 
-    b       : []
-    i       : [] 
-    img     : ["src"]
-    a       : ["href"] 
-    center  : []
-    font    : ["face", "color", "size"]
 
 # Global list of client connections in rooms.
-rooms = 
-    Lobby       : []
-    Library     : []
-    Dining      : []
-    Casino      : []
-    Gym         : []
-    Nightclub   : []
+rooms = {}
+rooms[room] = [] for room in settings.rooms
 
     
 # Adds a client to a room.
@@ -28,10 +15,11 @@ add = (client, room) ->
     rooms[room].push client
 
 # Removes a client from a room.
+sys = require "sys"
 remove = (client) -> 
     room = client.room
     index = rooms[room].indexOf client
-    delete rooms[room][index]
+    rooms[room].splice index, 1
 
 # Send the given string of data to all valid clients.
 broadcast = (room, data) -> 
@@ -60,24 +48,30 @@ app.listen 8000
 ((require "socket.io").listen app).on "connection", (client) ->
 
     client.on "message", (data) ->
-        data = JSON.parse data
+        try
+            data = JSON.parse data
+        catch e
+            return
+        text = util.stripTags data.message
+        html = util.stripTags data.message, settings.allowedTags
+        room = data.room
+        # Bail out if any data is missing.
+        if not rooms[room]? or not text
+            return
         if not client.name?
             # Client has not yet entered a name.
-            name = util.stripTags data.message
-            room = data.room
-            if not name or rooms[room].some ((c) -> c.name is name)
+            if rooms[room].some ((c) -> c.name is text)
                 # Name given is already in use.
                 client.send "Name is in use, please enter another"
             else
                 # Set the client's name and send the join message.
                 add client, room
-                client.name = name
-                client.displayName = util.stripTags data.message, allowedTags
+                client.name = text
+                client.displayName = html
                 broadcast client.room, "#{client.displayName} joins"
         else
             # Client sent a message.
-            message = util.stripTags data.message, allowedTags
-            broadcast client.room, "#{client.displayName}: #{message}"
+            broadcast client.room, "#{client.displayName}: #{html}"
 
     client.on "disconnect", ->
         # On disconnect, send the leave message and remove the client 

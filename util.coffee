@@ -1,5 +1,18 @@
 
+coffee     = require "coffee-script"
+fs         = require "fs"
 htmlparser = require "htmlparser"
+path       = require "path"
+
+
+exports.coffeeCompile = (file) ->
+    ###
+    Returns the given coffee-script filename as a compiled Javascript string.
+    ###
+    try
+        coffee.compile String (fs.readFileSync path.join __dirname, file)
+    catch error
+        "alert(\"#{error}\");"
 
 
 exports.stripTags = (html, allowed={}) -> 
@@ -9,7 +22,7 @@ exports.stripTags = (html, allowed={}) ->
     format: {tag1: [allowedAttribute1, allowedAttribute2], tag2: []}
     ###
     
-    escapeHtml = (html) ->
+    escapeHtml = (html) -> 
         ###
         Replace brackets and quotes with their HTML entities.
         ###
@@ -52,6 +65,7 @@ exports.stripTags = (html, allowed={}) ->
         (buildOne part for part in parts).join("")
 
     buildAll handler.dom
+
 
 exports.time = -> 
     ###

@@ -1,0 +1,10 @@
+* {font-family:georgia, garamond, serif; font-size:15px;}
+body {margin:0 0 90px 0;}
+p {margin:10px; padding:0;}
+#input {position:fixed; bottom:0; background:#ccc;
+        margin:0; width:100%; padding:20px;
+        border-top:1px solid #999;}
+.text {width:50%; border:1px solid #999; padding:7px;}
+.leave {display:none;}
+.button {padding:5px 15px; cursor:pointer;}
+ul {float:left; width:40%; list-style-type:none; min-height:100px;}

@@ -1,63 +1,23 @@
 <html>
 <head>
     <title>Grillode</title>
-    <style>
-
-        * {font-family:georgia, garamond, serif; font-size:15px;}
-        body {margin:0 0 90px 0;}
-        p {margin:10px; padding:0;}
-        #input {position:fixed; bottom:0; background:#ccc;
-                margin:0; width:100%; padding:20px;
-                border-top:1px solid #999;}
-        .text {width:50%; border:1px solid #999; padding:7px;}
-        .leave {display:none;}
-        .button {padding:5px 15px; cursor:pointer;}
-
-    </style>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script> 
-    <script>
-    
-        $(function() {
-
-            var socket = new io.Socket(); 
-
-            socket.on('message', function(data){
-                $('#messages').append('<p>' + data + '</p>');
-                window.scrollBy(0, 10000);
-            });
-
-            socket.connect();
-            
-            $('#input').submit(function() {
-                if (this.button.value == this.button.defaultValue) {
-                    this.button.value = 'Send Message';
-                    $(this.leave).show();
-                }
-                socket.send(this.message.value);
-                this.message.value = '';
-                this.message.focus();
-                return false;
-            });
-            
-            $('#message').focus(function() {
-                if (this.value == this.defaultValue) {
-                    this.value = '';
-                }
-                return true;
-            });
-
-        });
-
-    </script> 
+    <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-    <form id="input">
-        <input id="message" name="message" type="text" class="text" 
-            value="Please enter your name" />
-        <input type="submit" name="button" class="button" value="Join" />
-        <input type="button" name="leave" class="button leave" value="Leave" />
-    </form>
-    <div id="messages"></div>
+    <% Object.keys(rooms).forEach(function(room, i) { %>
+    <ul>
+        <li>
+            <a href="/room/<%= room %>/"><%= room %></a> 
+            (<%= rooms[room].length %>)
+        </li>
+        <% rooms[room].forEach(function(client) { %>
+        <li><%= client.name %></li>
+        <% }); %>
+    </ul>
+    <% if (i % 2 == 1) { %><br clear="all" /><% } %>
+    <% }); %>
 </body>
 </html>
+
+
+

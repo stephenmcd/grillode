@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title><%= room %> | Grillode</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script> 
+    <script src="/json2.js"></script> 
+    <script src="/client.coffee"></script> 
+</head>
+<body>
+    <form id="input">
+        <input id="message" name="message" type="text" class="text" 
+            value="Please enter your name" />
+        <input type="hidden" name="room" value="<%= room %>" />
+        <input type="submit" name="button" class="button" value="Join" />
+        <input type="button" name="leave" class="button leave" value="Leave" />
+    </form>
+    <div id="messages"></div>
+</body>
+</html>

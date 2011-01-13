@@ -1,6 +1,6 @@
 
 var fs = require('fs');
-var htmlparser = require('./htmlparser');
+var htmlparser = require('htmlparser');
 var path = require('path');
 var querystring = require('querystring');
 var sys = require('sys');

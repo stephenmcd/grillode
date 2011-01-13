@@ -1,6 +1,6 @@
 
 express  = require "express"
-util     = require "./util.coffee"
+utils    = require "./utils.coffee"
 settings = require "./settings.coffee"
 
 
@@ -23,7 +23,7 @@ remove = (client) ->
 
 # Send the given string of data to all valid clients.
 broadcast = (room, data) -> 
-    c.send "[#{util.time()}] #{data}" for c in rooms[room]
+    c.send "[#{utils.time()}] #{data}" for c in rooms[room]
 
 
 # Set up the express app.
@@ -39,7 +39,7 @@ app.get "/room/:room", (req, res) ->
 
 app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"
-    res.send util.coffeeCompile "client.coffee"
+    res.send utils.coffeeCompile "client.coffee"
 
 app.listen 8000
 
@@ -52,8 +52,8 @@ app.listen 8000
             data = JSON.parse data
         catch e
             return
-        text = util.stripTags data.message
-        html = util.stripTags data.message, settings.allowedTags
+        text = utils.stripTags data.message
+        html = utils.stripTags data.message, settings.allowedTags
         room = data.room
         # Bail out if any data is missing.
         if not rooms[room]? or not text

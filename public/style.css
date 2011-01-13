@@ -7,4 +7,4 @@ p {margin:10px; padding:0;}
 .text {width:50%; border:1px solid #999; padding:7px;}
 .leave {display:none;}
 .button {padding:5px 15px; cursor:pointer;}
-
+ul {float:left; width:40%; list-style-type:none; min-height:100px;}

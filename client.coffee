@@ -14,7 +14,10 @@ $ ->
         if this.button.value is this.button.defaultValue
             this.button.value = "Send Message"
             $(this.leave).show()
-        socket.send this.message.value
+        data = 
+            room: this.room.value
+            message: this.message.value
+        socket.send JSON.stringify data
         this.message.value = ''
         this.message.focus()
         false

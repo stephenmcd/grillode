@@ -1,4 +1,5 @@
 
+
 # Tag/attribs mapping of allowed tags and attributes.
 exports.allowedTags = 
     b       : []

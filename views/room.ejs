@@ -9,12 +9,15 @@
 </head>
 <body>
     <form id="input">
-        <input id="message" name="message" type="text" class="text" 
-            value="Please enter your name" />
         <input type="hidden" name="room" value="<%= room %>" />
-        <input type="submit" name="button" class="button" value="Join" />
-        <input type="button" name="leave" class="button leave" value="Leave" />
+        <input id="message" name="message" type="text" 
+            class="text" value="Please enter your name" />
+        <input id="button" type="submit" name="button" 
+            class="button" value="Join" />
+        <input id="leave" type="button" name="leave" 
+            class="button" value="Leave" />
     </form>
     <div id="messages"></div>
+    <ul id="users"></ul>
 </body>
 </html>

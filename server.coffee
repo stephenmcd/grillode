@@ -21,9 +21,13 @@ remove = (client) ->
     index = rooms[room].indexOf client
     rooms[room].splice index, 1
 
-# Send the given string of data to all valid clients.
-broadcast = (room, data) -> 
-    c.send "[#{utils.time()}] #{data}" for c in rooms[room]
+# Send the given message string to all clients for the given room.
+broadcast = (room, message) -> 
+    data = 
+        users: c.name for c in rooms[room]
+        message: "[#{utils.time()}] #{message}"
+    data = JSON.stringify data
+    c.send data for c in rooms[room]
 
 
 # Set up the express app.
@@ -62,7 +66,8 @@ app.listen 8000
             # Client has not yet entered a name.
             if rooms[room].some ((c) -> c.name is text)
                 # Name given is already in use.
-                client.send "Name is in use, please enter another"
+                message = message: "Name is in use, please enter another"
+                client.send JSON.stringify message
             else
                 # Set the client's name and send the join message.
                 add client, room
@@ -76,5 +81,8 @@ app.listen 8000
     client.on "disconnect", ->
         # On disconnect, send the leave message and remove the client 
         # from the global client list.
-        broadcast client.room, "#{client.displayName} leaves"
-        remove client
+        if client.name?
+            name = client.displayName
+            room = client.room
+            remove client
+            broadcast room, "#{name} leaves"

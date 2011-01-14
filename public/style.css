@@ -17,6 +17,6 @@ p {margin:10px; padding:0;}
 #input {position:fixed; bottom:0; background:#ddd;
         margin:0; width:100%; padding:20px;
         border-top:1px solid #ccc;}
-.text {width:50%; border:1px solid #999; padding:7px;}
-.button {padding:5px 15px; cursor:pointer;}
+#message {width:50%; border:1px solid #999; padding:7px;}
+#button, #leave {padding:5px 15px; cursor:pointer;}
 #leave {display:none;}

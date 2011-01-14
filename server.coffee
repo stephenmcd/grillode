@@ -33,13 +33,16 @@ broadcast = (room, message) ->
 # Set up the express app.
 app = express.createServer()
 app.use express.staticProvider root: "#{__dirname}/public"
+app.register ".coffee", require("coffeekup")
 app.set "view options", layout: off
 
+# Hompage that lists users in each room.
 app.get "/", (req, res) -> 
-    res.render "index.ejs", locals: rooms: rooms
+    res.render "index.coffee", context: rooms: rooms
 
+# A single room.
 app.get "/room/:room", (req, res) -> 
-    res.render "room.ejs", locals: room: req.params.room
+    res.render "room.coffee", context: room: req.params.room
 
 app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"

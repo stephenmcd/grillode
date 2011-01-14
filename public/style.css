@@ -1,10 +1,22 @@
+
 * {font-family:georgia, garamond, serif; font-size:15px;}
 body {margin:0 0 90px 0;}
+ul {list-style-type:none; padding:0; margin:0;}
+li {margin:5px 10px; text-align:left;}
+h1 {font-weight:normal; font-size:35px; margin:30px 5px;}
+h2 {font-weight:normal; display:inline; font-size:20px;}
+
+#index {margin:20px 60px;}
+#index ul {float:left; width:50%; min-height:120px;}
+
+#messages {float:left; margin-right:160px;}
+#users {float:right; position:fixed; top:0; right:0; width:160px;
+        background:#eee; bottom:0; margin:0; border-left:1px solid #ccc;
+        display:none;}
 p {margin:10px; padding:0;}
-#input {position:fixed; bottom:0; background:#ccc;
+#input {position:fixed; bottom:0; background:#ddd;
         margin:0; width:100%; padding:20px;
-        border-top:1px solid #999;}
+        border-top:1px solid #ccc;}
 .text {width:50%; border:1px solid #999; padding:7px;}
-.leave {display:none;}
 .button {padding:5px 15px; cursor:pointer;}
-ul {float:left; width:40%; list-style-type:none; min-height:100px;}
+#leave {display:none;}

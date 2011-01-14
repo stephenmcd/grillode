@@ -1,13 +1,14 @@
 <html>
 <head>
-    <title>Grillode</title>
+    <title>Home | Grillode</title>
     <link rel="stylesheet" href="/style.css" />
 </head>
-<body>
+<body id="index">
+    <h1>Grillode</h1>
     <% Object.keys(rooms).forEach(function(room, i) { %>
     <ul>
         <li>
-            <a href="/room/<%= room %>/"><%= room %></a> 
+            <h2><a href="/room/<%= room %>/"><%= room %></a></h2> 
             (<%= rooms[room].length %>)
         </li>
         <% rooms[room].forEach(function(client) { %>
@@ -18,6 +19,3 @@
     <% }); %>
 </body>
 </html>
-
-
-

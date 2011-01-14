@@ -1,7 +1,7 @@
 
 express  = require "express"
-utils    = require "./utils.coffee"
-settings = require "./settings.coffee"
+utils    = require "./utils"
+settings = require "./settings"
 
 
 # Global list of client connections in rooms.
@@ -15,7 +15,6 @@ add = (client, room) ->
     rooms[room].push client
 
 # Removes a client from a room.
-sys = require "sys"
 remove = (client) -> 
     room = client.room
     index = rooms[room].indexOf client

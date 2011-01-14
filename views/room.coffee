@@ -1,5 +1,6 @@
 
 html ->
+
     head ->
         title "#{@room} | Grillode"
         link rel: "stylesheet", href: "/style.css"
@@ -7,6 +8,7 @@ html ->
         script src: "/socket.io/socket.io.js"
         script src: "/json2.js"
         script src: "/client.coffee"
+
     body ->
         div  id: "messages"
         ul   id: "users"

@@ -6,7 +6,7 @@ settings = require "./settings"
 
 # Global list of client connections in rooms.
 rooms = {}
-rooms[room] = [] for room in settings.rooms
+rooms[room] = [] for room in settings.ROOMS
 
     
 # Adds a client to a room.
@@ -47,7 +47,7 @@ app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"
     res.send utils.coffeeCompile "client.coffee"
 
-app.listen 8000
+app.listen settings.PORT
 
 
 # Set up socket.io events.
@@ -59,7 +59,7 @@ app.listen 8000
         catch e
             return
         text = utils.stripTags data.message
-        html = utils.stripTags data.message, settings.allowedTags
+        html = utils.stripTags data.message, settings.ALLOWED_TAGS
         room = data.room
         # Bail out if any data is missing.
         if not rooms[room]? or not text

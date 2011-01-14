@@ -1,7 +1,7 @@
 
 
 # Tag/attribs mapping of allowed tags and attributes.
-exports.allowedTags = 
+exports.ALLOWED_TAGS = 
     b       : []
     i       : [] 
     img     : ["src"]
@@ -11,5 +11,7 @@ exports.allowedTags =
 
 
 # List of available rooms.
-exports.rooms = ["Lobby", "Library", "Dining", "Casino", "Gym", "Nightclub"]
+exports.ROOMS = ["Lobby", "Library", "Dining", "Casino", "Gym", "Nightclub"]
 
+# Port the server will listen on.
+exports.PORT = if isNaN process.argv[2] then 8000 else process.argv[2]

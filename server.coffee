@@ -1,7 +1,8 @@
 
 express  = require "express"
-utils    = require "./utils"
+path     = require "path"
 settings = require "./settings"
+utils    = require "./utils"
 
 
 # Global list of client connections in rooms.
@@ -31,7 +32,8 @@ broadcast = (room, message) ->
 
 # Set up the express app.
 app = express.createServer()
-app.use express.staticProvider root: "#{__dirname}/public"
+app.use express.logger()
+app.use express.staticProvider root: path.join __dirname, "public"
 app.register ".coffee", require("coffeekup")
 app.set "view options", layout: off
 

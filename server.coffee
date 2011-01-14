@@ -39,7 +39,7 @@ app.set "view options", layout: off
 
 # Hompage that lists users in each room.
 app.get "/", (req, res) -> 
-    res.render "index.coffee", context: rooms: rooms
+    res.render "index.coffee", context: (rooms: rooms), locals: i: 0
 
 # A single room.
 app.get "/room/:room", (req, res) -> 
@@ -61,6 +61,7 @@ app.listen settings.PORT
         catch e
             return
         text = utils.stripTags data.message
+        text = text.substr 0, settings.MAX_NAME_LENGTH
         html = utils.stripTags data.message, settings.ALLOWED_TAGS
         room = data.room
         # Bail out if any data is missing.

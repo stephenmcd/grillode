@@ -1,22 +1,30 @@
 
 * {font-family:georgia, garamond, serif; font-size:15px;}
-body {margin:0 0 90px 0;}
+body {margin:0;}
 ul {list-style-type:none; padding:0; margin:0;}
 li {margin:5px 10px; text-align:left;}
-h1 {font-weight:normal; font-size:35px; margin:30px 5px;}
+h1 {font-weight:normal; font-size:35px; margin:10px;}
 h2 {font-weight:normal; display:inline; font-size:20px;}
 
 #index {margin:20px 60px;}
-#index ul {float:left; width:50%; min-height:120px;}
+#index ul {float:left; width:50%; min-height:120px; margin:5px 0;}
+#index li.first {background:#eee; padding:10px;
+                 border-radius:5px;
+                 -moz-border-radius:5px; 
+                 -webkit-border-radius:5px;}
+#index li {padding:2px 10px;}
 
-#messages {float:left; margin-right:160px;}
-#users {float:right; position:fixed; top:0; right:0; width:160px;
+#messages {float:left; margin-right:200px; padding-bottom:90px;}
+#users {float:right; position:fixed; top:0; right:0; width:200px;
         background:#eee; bottom:0; margin:0; border-left:1px solid #ccc;
-        display:none;}
+        display:none; white-space:nowrap;}
 p {margin:10px; padding:0;}
 #input {position:fixed; bottom:0; background:#ddd;
         margin:0; width:100%; padding:20px;
         border-top:1px solid #ccc;}
-#message {width:50%; border:1px solid #999; padding:7px;}
-#button, #leave {padding:5px 15px; cursor:pointer;}
+#message {width:50%; border:1px solid #999; padding:7px;
+          border-radius:5px;
+          -moz-border-radius:5px; 
+          -webkit-border-radius:5px;}
+#button, #leave {padding:5px 15px; margin-left:10px; cursor:pointer;}
 #leave {display:none;}

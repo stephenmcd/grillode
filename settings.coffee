@@ -9,6 +9,8 @@ exports.ALLOWED_TAGS =
     center  : []
     font    : ["face", "color", "size"]
 
+# Maximum name length.
+exports.MAX_NAME_LENGTH = 30
 
 # List of available rooms.
 exports.ROOMS = ["Lobby", "Library", "Dining", "Casino", "Gym", "Nightclub"]

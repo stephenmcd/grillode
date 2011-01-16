@@ -15,7 +15,5 @@ html ->
                     " (#{users.length})"
                 for user in users
                     li user.name
-
-            i += 1
-            if i isnt 0 and i % 2 is 0 
+            if ++i % 2 is 0 
                 br clear: "all"

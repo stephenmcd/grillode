@@ -9,14 +9,14 @@ utils    = require "./utils"
 rooms = {}
 rooms[room] = [] for room in settings.ROOMS
 
-    
+
 # Adds a client to a room.
-add = (client, room) -> 
+joins = (client, room) -> 
     client.room = room
     rooms[room].push client
 
 # Removes a client from a room.
-remove = (client) -> 
+leaves = (client) -> 
     room = client.room
     index = rooms[room].indexOf client
     rooms[room].splice index, 1
@@ -27,7 +27,7 @@ broadcast = (room, message) ->
         users: c.name for c in rooms[room]
         message: "[#{utils.time()}] #{message}"
     data = JSON.stringify data
-    c.send data for c in rooms[room]
+    c.send data for c in rooms[room]    
 
 
 # Set up the express app.
@@ -42,7 +42,7 @@ app.get "/", (req, res) ->
     res.render "index.coffee", context: (rooms: rooms), locals: i: 0
 
 # A single room.
-app.get "/room/:room", (req, res) -> 
+app.get "/room/:room", (req, res) ->
     res.render "room.coffee", context: room: req.params.room
 
 app.get "/client.coffee", (req, res) ->
@@ -61,21 +61,24 @@ app.listen settings.PORT
         catch e
             return
         text = utils.stripTags data.message
-        text = text.substr 0, settings.MAX_NAME_LENGTH
+        text = text.substr 0, settings.MAX_USERNAME_LENGTH
         html = utils.stripTags data.message, settings.ALLOWED_TAGS
-        room = data.room
+        room = data.room.substr 0, settings.MAX_ROOMNAME_LENGTH
         # Bail out if any data is missing.
-        if not rooms[room]? or not text
+        if not (room and text)
             return
         if not client.name?
             # Client has not yet entered a name.
-            if rooms[room].some ((c) -> c.name is text)
+            if rooms[room]? and rooms[room].some ((c) -> c.name is text)
                 # Name given is already in use.
                 message = message: "Name is in use, please enter another"
                 client.send JSON.stringify message
             else
+                # If allowed, dynamically add the room if it doesn't exist.
+                if settings.ADDABLE_ROOMS and not rooms[room]?
+                    rooms[room] = []
                 # Set the client's name and send the join message.
-                add client, room
+                joins client, room
                 client.name = text
                 client.displayName = html
                 broadcast client.room, "#{client.displayName} joins"
@@ -85,9 +88,12 @@ app.listen settings.PORT
 
     client.on "disconnect", ->
         # On disconnect, send the leave message and remove the client 
-        # from the global client list.
+        # from the room.
         if client.name?
             name = client.displayName
             room = client.room
-            remove client
+            leaves client
             broadcast room, "#{name} leaves"
+            # Remove a dynamically created room when it is empty.
+            if rooms[room]?.length is 0 and room not in settings.ROOMS
+                delete rooms[room]

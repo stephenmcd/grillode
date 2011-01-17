@@ -2,7 +2,7 @@
 html ->
 
     head ->
-        title "#{@room} | Grillode"
+        title "#{@title} | Grillode"
         link rel: "stylesheet", href: "/style.css"
         script src: "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
         script src: "/socket.io/socket.io.js"

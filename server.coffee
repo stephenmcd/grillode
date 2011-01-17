@@ -1,6 +1,5 @@
 
 express  = require "express"
-path     = require "path"
 settings = require "./settings"
 utils    = require "./utils"
 
@@ -29,21 +28,37 @@ broadcast = (room, message) ->
     data = JSON.stringify data
     c.send data for c in rooms[room]    
 
+# Expose connect's uid function which is available as an express dependency.
+uid = (require "connect").utils.uid
+
+# Returns true if a room is dynamic (eg not defined in settings.ROOMS)
+dynamic = (room) -> 
+    room not in settings.ROOMS
+
 
 # Set up the express app.
 app = express.createServer()
 app.use express.logger()
-app.use express.staticProvider root: path.join __dirname, "public"
-app.register ".coffee", require("coffeekup")
+app.use express.staticProvider root: (require "path").join __dirname, "public"
+app.register ".coffee", require "coffeekup"
 app.set "view options", layout: off
 
 # Hompage that lists users in each room.
 app.get "/", (req, res) -> 
-    res.render "index.coffee", context: (rooms: rooms), locals: i: 0
+    staticRooms = {}
+    for room, users of rooms when not dynamic room
+        staticRooms[room] = users
+    res.render "index.coffee", context: (rooms: staticRooms), locals: i: 0
 
 # A single room.
 app.get "/room/:room", (req, res) ->
-    res.render "room.coffee", context: room: req.params.room
+    room = req.params.room
+    title = if dynamic room then "Private" else room
+    res.render "room.coffee", context: room: room, title: title
+
+# Start a dynamic room.
+app.get "/start", (req, res) ->
+    res.redirect("room/#{uid(20)}")
 
 app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"
@@ -95,5 +110,5 @@ app.listen settings.PORT
             leaves client
             broadcast room, "#{name} leaves"
             # Remove a dynamically created room when it is empty.
-            if rooms[room]?.length is 0 and room not in settings.ROOMS
+            if rooms[room]?.length is 0 and dynamic room
                 delete rooms[room]

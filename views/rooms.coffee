@@ -11,7 +11,7 @@ html ->
             ul ->
                 li class: "first", ->
                     h2 ->
-                        a href: "/room/#{room}/", -> room
+                        a href: "/rooms/#{room}/", -> room
                     " (#{users.length})"
                 for user in users
                     li user.name

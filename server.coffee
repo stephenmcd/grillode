@@ -26,27 +26,47 @@ dynamic = (room) -> room not in settings.ROOMS
 
 # Set up the express app.
 app = express.createServer()
+app.use express.bodyDecoder()
 app.use express.logger()
 app.use express.staticProvider root: (require "path").join __dirname, "public"
 app.register ".coffee", require "coffeekup"
 app.set "view options", layout: off
 
-# Hompage that lists users in each room.
+# Homepage - redirect to the room list.
 app.get "/", (req, res) -> 
-    staticRooms = {}
-    for room, users of rooms when not dynamic room
-        staticRooms[room] = users
-    res.render "index.coffee", context: (rooms: staticRooms), locals: i: 0
+    res.redirect("/rooms")
 
-# A single room.
-app.get "/room/:room", (req, res) ->
+# Form for adding a named room.
+app.all "/rooms/add", (req, res) -> 
+    room = message = ""
+    if req.body?.room?
+        room = req.body.room.trim().substr 0, settings.MAX_ROOMNAME_LENGTH
+        if rooms[room]?
+            message = "Room already exists, please choose another name"
+        else
+            res.redirect "/rooms/#{room}"
+    res.render "add_room.coffee", context: room: room, message: message
+
+# Main view for a room.
+app.get "/rooms/:room", (req, res) ->
     room = req.params.room
-    title = if dynamic room then "Private" else room
+    private = dynamic room and not settings.ADDABLE_ROOMS_VISIBLE
+    title = if private then "Private" else room
     res.render "room.coffee", context: room: room, title: title
 
-# Start a dynamic room.
+# Lists rooms and users in each room.
+app.get "/rooms", (req, res) -> 
+    if settings.ADDABLE_ROOMS_VISIBLE
+        visibleRooms = rooms
+    else
+        visibleRooms = {}
+        for room, users of rooms when not dynamic room
+            visibleRooms[room] = users
+    res.render "rooms.coffee", context: (rooms: visibleRooms), locals: i: 0
+
+# Starts a private room.
 app.get "/start", (req, res) ->
-    res.redirect("room/#{uid(20)}")
+    res.redirect("/room/#{uid(settings.MAX_ROOMNAME_LENGTH)}")
 
 app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"
@@ -59,6 +79,7 @@ app.listen settings.PORT
 ((require "socket.io").listen app).on "connection", (client) ->
 
     client.on "message", (data) ->
+        data = data.trim()
         if not client.room?
             # Initial connection on load of room template.
             room = data.substr 0, settings.MAX_ROOMNAME_LENGTH

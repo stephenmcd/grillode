@@ -23,3 +23,6 @@ exports.PORT = if isNaN process.argv[2] then 8000 else process.argv[2]
 
 # If true, rooms are dynamically generated when requested.
 exports.ADDABLE_ROOMS = true
+
+# If true, dynamic rooms are visible in the rooms view.
+exports.ADDABLE_ROOMS_VISIBLE = false

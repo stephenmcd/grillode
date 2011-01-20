@@ -16,6 +16,7 @@ html ->
             input
                 type: "hidden"
                 name: "room"
+                id: "room"
                 value: @room
             input
                 type: "text"

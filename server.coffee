@@ -7,6 +7,7 @@ utils    = require "./utils"
 # Global list of client connections in rooms.
 rooms = {}
 rooms[room] = [] for room in settings.ROOMS
+matchups = []
 
 
 # Send the given message string to all clients for the given room.
@@ -64,10 +65,30 @@ app.get "/rooms", (req, res) ->
             visibleRooms[room] = users
     res.render "rooms.coffee", context: (rooms: visibleRooms), locals: i: 0
 
-# Starts a private room.
-app.get "/start", (req, res) ->
-    res.redirect("/room/#{uid(settings.MAX_ROOMNAME_LENGTH)}")
+# Starts a matchup room - a randomly named private room that goes into 
+# the matchup list while waiting for someone else to join.
+app.get "/wait", (req, res) ->
+    room = uid settings.MAX_ROOMNAME_LENGTH
+    matchups.push room
+    res.redirect "/rooms/#{room}"
 
+# Join the earliest created dynamic room someone is waiting in, eg first in 
+# the matchup list.
+app.get "/match", (req, res) ->
+    if matchups.length is 0
+        res.send "No one is waiting"
+    else
+        res.redirect "/rooms/#{matchups[0]}"
+
+# Chatroulette style matchup - if there is a room in the matchup list, join 
+# it, otherwise create a dynamic room that will go into the matchup list.
+app.get "/random", (req, res) ->
+    if matchups.length is 0
+        res.redirect "/wait"
+    else
+        res.redirect "/rooms/#{matchups[0]}"
+
+# Hosts the client-side Coffeescript converting it to Javascript.
 app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"
     res.send utils.coffeeCompile "client.coffee"
@@ -77,14 +98,19 @@ app.listen settings.PORT
 
 # Set up socket.io events.
 ((require "socket.io").listen app).on "connection", (client) ->
-
+    
     client.on "message", (data) ->
         data = data.trim()
         if not client.room?
-            # Initial connection on load of room template.
+            # Initial connection on load of room view.
             room = data.substr 0, settings.MAX_ROOMNAME_LENGTH
+            if room in matchups
+                # Client has been matched up with someone waiting at a 
+                # matchup room, remove the room from the matchup list.
+                matchups.slice matchups.indexOf matchups
             if not rooms[room]?
                 if settings.ADDABLE_ROOMS
+                    matchups.push room
                     rooms[room] = []
                 else
                     return
@@ -115,12 +141,21 @@ app.listen settings.PORT
                 broadcast client.room, "#{client.displayName}: #{html}"
 
     client.on "disconnect", ->
-        # On disconnect, send the leave message and remove the client 
-        # from the room.
-        if client.name?
-            {displayName, room} = client
+        {displayName, room} = client
+        if displayName?
+            # Client had joined a room - send the leave message and remove 
+            # the client from the room.
             rooms[room].splice (rooms[room].indexOf client), 1
             broadcast room, "#{displayName} leaves"
+        else if room in matchups
+            # Client was asigned to a matchup but didn't actually join, so 
+            # return the room to the front of the matchup list.
+            matchups.unshift room
+        if room?
+            if room in matchups
+                # Client created the matchup room without anyone else 
+                # joining it, so remove it from the matchup list.
+                matchups.slice matchups.indexOf matchups
             # Remove a dynamically created room when it is empty.
             if rooms[room]?.length is 0 and dynamic room
                 delete rooms[room]

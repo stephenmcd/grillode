@@ -1,12 +1,25 @@
 
 express  = require "express"
+io       = require "socket.io"
 settings = require "./settings"
 utils    = require "./utils"
 
 
-# Global list of client connections in rooms.
+# Convenience method for removing an item from an array.
+Array.prototype.remove = (item) -> 
+    if item not in this
+        index = this.indexOf item
+        this.splice index, 1
+
+
+# Global mapping of room names to lists of client connections for rooms.
 rooms = {}
 rooms[room] = [] for room in settings.ROOMS
+
+# Global queue of room names for random matchups. Added to when a user 
+# starts a new room, and pulled from when another user joins that room. 
+# Allows for chatroulette style random matchups, or a customer support 
+# type of service.
 matchups = []
 
 
@@ -17,12 +30,6 @@ broadcast = (room, message) ->
         message: "[#{utils.time()}] #{message}"
     data = JSON.stringify data
     c.send data for c in rooms[room]    
-
-# Expose connect's uid function which is available as an express dependency.
-uid = (require "connect").utils.uid
-
-# Returns true if a room is dynamic (eg not defined in settings.ROOMS)
-dynamic = (room) -> room not in settings.ROOMS
 
 
 # Set up the express app.
@@ -51,7 +58,7 @@ app.all "/rooms/add", (req, res) ->
 # Main view for a room.
 app.get "/rooms/:room", (req, res) ->
     room = req.params.room
-    private = dynamic room and not settings.ADDABLE_ROOMS_VISIBLE
+    private = rooms[room]?.dynamic and not settings.ADDABLE_ROOMS_VISIBLE
     title = if private then "Private" else room
     res.render "room.coffee", context: room: room, title: title
 
@@ -61,35 +68,34 @@ app.get "/rooms", (req, res) ->
         visibleRooms = rooms
     else
         visibleRooms = {}
-        for room, users of rooms when not dynamic room
+        for room, users of rooms when not rooms[room]?.dynamic
             visibleRooms[room] = users
     res.render "rooms.coffee", context: (rooms: visibleRooms), locals: i: 0
 
 # Starts a matchup room - a randomly named private room that goes into 
 # the matchup list while waiting for someone else to join.
 app.get "/wait", (req, res) ->
-    room = uid settings.MAX_ROOMNAME_LENGTH
-    matchups.push room
+    room = utils.uid settings.MAX_ROOMNAME_LENGTH
     res.redirect "/rooms/#{room}"
 
 # Join the earliest created dynamic room someone is waiting in, eg first in 
 # the matchup list.
 app.get "/match", (req, res) ->
-    if matchups.length is 0
-        res.send "No one is waiting"
+    if room = matchups.shift()
+        res.redirect "/rooms/#{room}"
     else
-        res.redirect "/rooms/#{matchups[0]}"
+        res.send "No one is waiting"
 
 # Chatroulette style matchup - if there is a room in the matchup list, join 
 # it, otherwise create a dynamic room that will go into the matchup list.
 app.get "/random", (req, res) ->
-    if matchups.length is 0
-        res.redirect "/wait"
+    if room = matchups.shift()
+        res.redirect "/rooms/#{room}"
     else
-        res.redirect "/rooms/#{matchups[0]}"
+        res.redirect "/wait"
 
 # Hosts the client-side Coffeescript converting it to Javascript.
-app.get "/client.coffee", (req, res) ->
+app.get "/client.coffee", (reqd, res) ->
     res.header "Content-Type", "text/plain"
     res.send utils.coffeeCompile "client.coffee"
 
@@ -97,28 +103,26 @@ app.listen settings.PORT
 
 
 # Set up socket.io events.
-((require "socket.io").listen app).on "connection", (client) ->
+socket = io.listen app
+socket.options.log = -> null
+socket.on "connection", (client) ->
     
     client.on "message", (data) ->
-        data = data.trim()
-        if not client.room?
+        data = JSON.parse data
+        if data.room? and not client.room?
             # Initial connection on load of room view.
-            room = data.substr 0, settings.MAX_ROOMNAME_LENGTH
-            if room in matchups
-                # Client has been matched up with someone waiting at a 
-                # matchup room, remove the room from the matchup list.
-                matchups.slice matchups.indexOf matchups
+            room = data.room.trim().substr 0, settings.MAX_ROOMNAME_LENGTH
             if not rooms[room]?
                 if settings.ADDABLE_ROOMS
-                    matchups.push room
                     rooms[room] = []
+                    rooms[room].dynamic = true
                 else
                     return
             client.room = room
-        else
-            text = utils.stripTags data
+        else if data.message? and client.room? and rooms[client.room]?
+            text = utils.stripTags data.message.trim()
             text = text.substr 0, settings.MAX_USERNAME_LENGTH
-            html = utils.stripTags data, settings.ALLOWED_TAGS
+            html = utils.stripTags data.message.trim(), settings.ALLOWED_TAGS
             room = client.room
             # Bail out if any data is missing.
             if not text
@@ -132,6 +136,8 @@ app.listen settings.PORT
                 else
                     # Add the client to the room, set the client's name 
                     # and send the join message.
+                    if rooms[room]?.dynamic and rooms[room].length is 0
+                        matchups.push room
                     client.name = text
                     client.displayName = html
                     rooms[room].push client
@@ -142,20 +148,23 @@ app.listen settings.PORT
 
     client.on "disconnect", ->
         {displayName, room} = client
-        if displayName?
-            # Client had joined a room - send the leave message and remove 
-            # the client from the room.
-            rooms[room].splice (rooms[room].indexOf client), 1
+        joined = displayName?
+        dynamic = rooms[room]?.dynamic
+        users = rooms[room]?.length
+        if joined
+            # Client had joined a room - send the leave message and 
+            # remove the client from the room.
+            rooms[room].remove client
             broadcast room, "#{displayName} leaves"
-        else if room in matchups
-            # Client was asigned to a matchup but didn't actually join, so 
-            # return the room to the front of the matchup list.
+        if joined and room in matchups
+            # Client created the matchup room without anyone else 
+            # joining it, so remove it from the matchup list.
+            matchups.remove room
+        if not joined and dynamic and users is 1
+            # Client was assigned to a matchup room but didn't 
+            # actually join, so return the room to the front of 
+            # the matchup list.
             matchups.unshift room
-        if room?
-            if room in matchups
-                # Client created the matchup room without anyone else 
-                # joining it, so remove it from the matchup list.
-                matchups.slice matchups.indexOf matchups
+        if dynamic and users is 0
             # Remove a dynamically created room when it is empty.
-            if rooms[room]?.length is 0 and dynamic room
-                delete rooms[room]
+            delete rooms[room]

@@ -12,15 +12,15 @@ form {background:#ddd; margin:0; padding:20px; border-top:1px solid #ccc;}
        -moz-border-radius:5px; 
        -webkit-border-radius:5px;}
 
-#index h1 {margin:20px 10px;}
-#index ul {float:left; width:50%; min-height:120px; margin:5px 0;}
-#index li.first {background:#eee; padding:10px;
+.rooms h1 {margin:20px 10px;}
+.rooms ul {float:left; width:50%; min-height:120px; margin:5px 0;}
+.rooms li.first {background:#eee; padding:10px;
                  border-radius:5px;
                  -moz-border-radius:5px; 
                  -webkit-border-radius:5px;}
-#index li {padding:2px 10px;}
+.rooms li {padding:2px 10px;}
 
-#room {margin:0;}
+.room {margin:0;}
 
 #messages {float:left; margin-right:200px; padding-bottom:90px;}
 #users {float:right; position:fixed; top:0; right:0; width:200px;

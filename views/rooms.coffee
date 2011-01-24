@@ -5,7 +5,7 @@ html ->
         title "Home | Grillode"
         link rel: "stylesheet", href: "/style.css"
 
-    body id: "index", ->
+    body class: "rooms", ->
         h1 "Grillode"
         for room, users of @rooms
             ul ->

@@ -19,14 +19,14 @@ $ ->
 
     # Send the room name once connected.
     socket.on "connect", ->
-        socket.send $("#room").attr "value"
+        socket.send JSON.stringify room: $("#room").attr "value"
 
     socket.connect()
     
     # On first submit, change the submit button text and 
     # show the leave button.
     $("#input").submit ->
-        socket.send this.message.value
+        socket.send JSON.stringify message: this.message.value
         this.message.value = ""
         this.message.focus()
         false

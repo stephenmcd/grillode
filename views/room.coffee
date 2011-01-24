@@ -9,7 +9,7 @@ html ->
         script src: "/json2.js"
         script src: "/client.coffee"
 
-    body id: "room", ->
+    body class: "room", ->
         div  id: "messages"
         ul   id: "users"
         form id: "input", ->

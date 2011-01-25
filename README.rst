@@ -19,8 +19,9 @@ using `Node Package Manager`_ (NPM).
   * `coffeekup`_ >= 0.2.2
   * `htmlparser`_ >= 1.7.3
 
-With Node.js and NPM installed, you can install all of the dependencies 
-by running the following command from within the Grillode directory::
+With Node.js and NPM installed, you can install all of the above 
+dependencies by running the following command from within the Grillode 
+directory::
 
     $ npm install .
 
@@ -32,7 +33,7 @@ from within the Grillode directory, with an optional port number::
 Configuration
 =============
 
-Grillode can operate in several modes to support different use cases.
+Grillode can operate in several modes to support different use cases:
 
   * A general chat server with a fixed set of rooms
   * A hybrid of the above, where users can add their own rooms
@@ -43,7 +44,8 @@ Grillode can operate in several modes to support different use cases.
 Fixed rooms can be configured by changing the list of default rooms in 
 the settings file ``settings.coffee`` via the ``ROOM`` setting. In the 
 same file, the ``ADDABLE_ROOMS`` setting can be set to ``on`` or ``off`` 
-to enable the other modes, which are each then accessed the following URLs::
+to enable the other modes, which are each then accessed via the following 
+URLs::
 
   * /rooms/add - Add a room
   * /wait - Wait for someone
@@ -52,7 +54,7 @@ to enable the other modes, which are each then accessed the following URLs::
 
 .. _`CoffeeScript`: http://coffeescript.org/
 .. _`Node.js`: http://nodejs.org/
-.. _`Node Package Manage`: http://npmjs.org/
+.. _`Node Package Manager`: http://npmjs.org/
 .. _`express`: http://expressjs.com/
 .. _`socket.io`: http://socket.io/
 .. _`coffee-script`: http://coffeescript.org/

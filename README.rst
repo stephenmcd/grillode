@@ -47,10 +47,10 @@ same file, the ``ADDABLE_ROOMS`` setting can be set to ``on`` or ``off``
 to enable the other modes, which are each then accessed via the following 
 URLs::
 
-  * /rooms/add - Add a room
-  * /wait - Wait for someone
-  * /match - Join someone waiting
-  * /random - Random match up
+  * ``/rooms/add`` - Add a room
+  * ``/wait`` - Wait for someone
+  * ``/match`` - Join someone waiting
+  * ``/random`` - Random match up
 
 .. _`CoffeeScript`: http://coffeescript.org/
 .. _`Node.js`: http://nodejs.org/

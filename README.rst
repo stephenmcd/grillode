@@ -5,7 +5,8 @@ Overview
 Grillode is a web-based chat application written in `CoffeeScript`_ 
 and built for `Node.js`_. Due to web sockets and Node's evented 
 model, the Grillode server should be able to handle thousands of 
-real-time users simultaneously.
+real-time users simultaneously. A demo can be found at 
+http://chat.jupo.org.
 
 Installation
 ============

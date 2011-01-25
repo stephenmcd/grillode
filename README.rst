@@ -2,16 +2,18 @@ Overview
 ========
 
 Grillode is a web-based chat application written in `CoffeeScript`_ 
-and built for `Node.js`_. Due to web sockets and Node's evented 
-model, the Grillode server should be able to handle thousands of 
-real-time users simultaneously. A demo can be found at 
-http://chat.jupo.org.
+and for `Node.js`_, and is `BSD licensed`_.
+
+Due to web sockets and Node's evented model, the Grillode server 
+should be able to handle thousands of real-time users simultaneously. 
+
+A demo can be found at http://chat.jupo.org.
 
 Installation
 ============
 
-Grillode is 
-Grillode makes use of the following libraries which can be installed 
+Grillode is available in source form on both `Github`_ and `Bitbucket`_.
+Grillode also makes use of the following libraries which can be installed 
 using `Node Package Manager`_ (NPM).
 
   * `express`_ >= 1.0.3
@@ -55,6 +57,8 @@ URLs:
 
 .. _`CoffeeScript`: http://coffeescript.org/
 .. _`Node.js`: http://nodejs.org/
+.. _`Github`: http://github.com/stephenmcd/grillode/
+.. _`Bitbucket`: http://bitbucket.org/stephenmcd/grillode/
 .. _`Node Package Manager`: http://npmjs.org/
 .. _`express`: http://expressjs.com/
 .. _`socket.io`: http://socket.io/

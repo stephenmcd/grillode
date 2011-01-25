@@ -4,10 +4,10 @@
   "repository": "http://github.com/stephenmcd/grillode",
   "author": "Stephen McDonald <steve@jupo.org> (http://jupo.org)",
   "dependencies": {
-    "express": "*",
-    "socket.io": "*",
-    "coffee-script": "*",
-    "coffeekup": "*",
-    "htmlparser": "*",
+    "express": ">= 1.0.3",
+    "socket.io": ">= 0.6.8",
+    "coffee-script": ">= 1.0.0",
+    "coffeekup": ">= 0.2.2",
+    "htmlparser": ">= 1.7.3",
   }
 }

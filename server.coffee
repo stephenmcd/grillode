@@ -37,8 +37,8 @@ app = express.createServer()
 app.use express.bodyDecoder()
 app.use express.logger()
 app.use express.staticProvider root: (require "path").join __dirname, "public"
+app.set "view options", locals: i: 0
 app.register ".coffee", require "coffeekup"
-app.set "view options", layout: off
 
 # Homepage - redirect to the room list.
 app.get "/", (req, res) -> 
@@ -53,14 +53,16 @@ app.all "/rooms/add", (req, res) ->
             message = "Room already exists, please choose another name"
         else
             res.redirect "/rooms/#{room}"
-    res.render "add_room.coffee", context: room: room, message: message
+    context = title: "Add room", room: room, message: message
+    res.render "add_room.coffee", context: context
 
 # Main view for a room.
 app.get "/rooms/:room", (req, res) ->
     room = req.params.room
     private = rooms[room]?.dynamic and not settings.ADDABLE_ROOMS_VISIBLE
     title = if private then "Private" else room
-    res.render "room.coffee", context: room: room, title: title
+    context = title: title, room: room
+    res.render "room.coffee", layout: false, context: context
 
 # Lists rooms and users in each room.
 app.get "/rooms", (req, res) -> 
@@ -70,7 +72,8 @@ app.get "/rooms", (req, res) ->
         visibleRooms = {}
         for room, users of rooms when not rooms[room]?.dynamic
             visibleRooms[room] = users
-    res.render "rooms.coffee", context: (rooms: visibleRooms), locals: i: 0
+    context = title: "Home", rooms: visibleRooms
+    res.render "rooms.coffee", context: context
 
 # Starts a matchup room - a randomly named private room that goes into 
 # the matchup list while waiting for someone else to join.
@@ -84,7 +87,8 @@ app.get "/match", (req, res) ->
     if room = matchups.shift()
         res.redirect "/rooms/#{room}"
     else
-        res.send "No one is waiting"
+        context = title: "Match"
+        res.render "no_match.coffee", context: context
 
 # Chatroulette style matchup - if there is a room in the matchup list, join 
 # it, otherwise create a dynamic room that will go into the matchup list.

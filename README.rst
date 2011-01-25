@@ -1,4 +1,3 @@
-========
 Overview
 ========
 
@@ -11,6 +10,7 @@ http://chat.jupo.org.
 Installation
 ============
 
+Grillode is 
 Grillode makes use of the following libraries which can be installed 
 using `Node Package Manager`_ (NPM).
 

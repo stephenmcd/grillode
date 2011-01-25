@@ -45,7 +45,7 @@ Fixed rooms can be configured by changing the list of default rooms in
 the settings file ``settings.coffee`` via the ``ROOM`` setting. In the 
 same file, the ``ADDABLE_ROOMS`` setting can be set to ``on`` or ``off`` 
 to enable the other modes, which are each then accessed via the following 
-URLs::
+URLs:
 
   * ``/rooms/add`` - Add a room
   * ``/wait`` - Wait for someone

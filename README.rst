@@ -32,6 +32,11 @@ You can then run the Grillode server by running the following command
 from within the Grillode directory, with an optional port number::
 
     $ coffee server.coffee [PORT]
+    
+To allow the server to continue to run after the terminal session has 
+ended, you can run the same command using ``nohup``::
+
+    $ nohup coffee server.coffee [PORT] &
 
 Configuration
 =============

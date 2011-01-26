@@ -7,7 +7,7 @@ utils    = require "./utils"
 
 # Convenience method for removing an item from an array.
 Array.prototype.remove = (item) -> 
-    if item not in this
+    if item in this
         index = this.indexOf item
         this.splice index, 1
 

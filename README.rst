@@ -1,8 +1,8 @@
 Overview
 ========
 
-Grillode is a web-based chat application written in `CoffeeScript`_ 
-and built for `Node.js`_. It is `BSD licensed`_.
+Grillode is A web-based chat application written in `CoffeeScript`_ 
+for `Node.js`_. It is `BSD licensed`_.
 
 Due to web sockets and Node's evented model, the Grillode server 
 should be able to handle thousands of real-time users simultaneously. 

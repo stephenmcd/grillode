@@ -26,3 +26,6 @@ exports.ADDABLE_ROOMS = on
 
 # If true, dynamic rooms are visible in the rooms view.
 exports.ADDABLE_ROOMS_VISIBLE = off
+
+# If true, each request is logged to the terminal.
+exports.LOGGING = on

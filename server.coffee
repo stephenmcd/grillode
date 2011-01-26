@@ -24,18 +24,23 @@ matchups = []
 
 
 # Send the given message string to all clients for the given room.
-broadcast = (room, message) -> 
+broadcast = (room, message, addr) -> 
     data = 
         users: c.name for c in rooms[room]
         message: "[#{utils.time()}] #{message}"
     data = JSON.stringify data
     c.send data for c in rooms[room]    
+    if settings.LOGGING
+        timestamp = (new Date).toUTCString()
+        output = "#{addr} - - [#{timestamp}] \"#{room} #{message}\" - - - -\n"
+        process.stdout.write output
 
 
 # Set up the express app.
 app = express.createServer()
 app.use express.bodyDecoder()
-app.use express.logger()
+if settings.LOGGING
+    app.use express.logger()
 app.use express.staticProvider root: (require "path").join __dirname, "public"
 app.set "view options", locals: i: 0
 app.register ".coffee", require "coffeekup"
@@ -99,7 +104,7 @@ app.get "/random", (req, res) ->
         res.redirect "/wait"
 
 # Hosts the client-side Coffeescript converting it to Javascript.
-app.get "/client.coffee", (reqd, res) ->
+app.get "/client.coffee", (req, res) ->
     res.header "Content-Type", "text/plain"
     res.send utils.coffeeCompile "client.coffee"
 
@@ -123,11 +128,13 @@ socket.on "connection", (client) ->
                 else
                     return
             client.room = room
+            client.addr = client.request.socket.remoteAddress
         else if data.message? and client.room? and rooms[client.room]?
             text = utils.stripTags data.message.trim()
             text = text.substr 0, settings.MAX_USERNAME_LENGTH
             html = utils.stripTags data.message.trim(), settings.ALLOWED_TAGS
             room = client.room
+            addr = client.addr
             # Bail out if any data is missing.
             if not text
                 return
@@ -145,21 +152,22 @@ socket.on "connection", (client) ->
                     client.name = text
                     client.displayName = html
                     rooms[room].push client
-                    broadcast client.room, "#{client.displayName} joins"
+                    broadcast client.room, "#{client.displayName} joins", addr
             else
                 # Client sent a message.
-                broadcast client.room, "#{client.displayName}: #{html}"
+                broadcast client.room, "#{client.displayName}: #{html}", addr
 
     client.on "disconnect", ->
         {displayName, room} = client
         joined = displayName?
         dynamic = rooms[room]?.dynamic
         users = rooms[room]?.length
+        addr = client.addr
         if joined
             # Client had joined a room - send the leave message and 
             # remove the client from the room.
             rooms[room].remove client
-            broadcast room, "#{displayName} leaves"
+            broadcast room, "#{displayName} leaves", addr
         if joined and room in matchups
             # Client created the matchup room without anyone else 
             # joining it, so remove it from the matchup list.

@@ -15,7 +15,7 @@ $ ->
             button = $("#button")
             if button.attr("value") is button.attr("defaultValue")
                 button.attr "value", "Send Message"
-                $("#leave, #users").show()
+                $("#users").show()
 
     # Send the room name once connected.
     socket.on "connect", ->

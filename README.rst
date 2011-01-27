@@ -33,10 +33,15 @@ from within the Grillode directory, with an optional port number::
 
     $ coffee server.coffee [PORT]
     
-To allow the server to continue to run after the terminal session has 
-ended, you can run the same command using ``nohup``::
+To allow the server to continue to run detached from the terminal 
+session, you can run the same command using ``nohup``::
 
     $ nohup coffee server.coffee [PORT] &
+    
+When running the server detached from the terminal session, you can 
+shut the server down in one command with::
+
+    $ kill -9 `ps aux | grep server.coffee | grep -v grep | awk '{print $2}'`
 
 Configuration
 =============

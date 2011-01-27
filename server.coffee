@@ -45,9 +45,9 @@ app.use express.staticProvider root: (require "path").join __dirname, "public"
 app.set "view options", locals: i: 0
 app.register ".coffee", require "coffeekup"
 
-# Homepage - redirect to the room list.
+# Homepage - redirect to the default URL.
 app.get "/", (req, res) -> 
-    res.redirect("/rooms")
+    res.redirect(settings.DEFAULT_URL)
 
 # Form for adding a named room.
 app.all "/rooms/add", (req, res) -> 

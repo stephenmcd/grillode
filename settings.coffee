@@ -29,3 +29,11 @@ exports.ADDABLE_ROOMS_VISIBLE = off
 
 # If true, each request is logged to the terminal.
 exports.LOGGING = on
+
+# Default URL, one of:
+# /rooms - List all rooms
+# /rooms/add - Add a room
+# /wait - Wait for someone
+# /match - Join someone waiting
+# /random - Random match up
+exports.DEFAULT_URL = "/rooms"

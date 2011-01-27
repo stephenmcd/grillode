@@ -49,12 +49,17 @@ Grillode can operate in several modes to support different use cases:
   * A hybrid of the above, where users are randomly matched to each other
   * All of the above at once!
 
-Fixed rooms can be configured by changing the list of default rooms in 
-the settings file ``settings.coffee`` via the ``ROOM`` setting. In the 
-same file, the ``ADDABLE_ROOMS`` setting can be set to ``on`` or ``off`` 
-to enable the other modes, which are each then accessed via the following 
-URLs:
+Several settings found in the file ``settings.coffee`` can be used to 
+control the modes described above, these are:
 
+  * ``ROOMS`` - The initial list of fixed room names
+  * ``ADDABLE_ROOMS`` - When set to ``on``, rooms can be added, allowing for the applicable modes described above
+  * ``ADDABLE_ROOMS_VISIBLE`` - When set to ``on``, dynamically added rooms are visible in the room list
+  * ``DEFAULT_URL`` - URL redirected to from the index page, which can be one of the URLs listed below
+  
+The following URLs are provided which cater for the various modes described:
+
+  * ``/rooms`` - List all rooms
   * ``/rooms/add`` - Add a room
   * ``/wait`` - Wait for someone
   * ``/match`` - Join someone waiting

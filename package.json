@@ -1,6 +1,6 @@
 {
   "name": "grillode",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "repository": "http://github.com/stephenmcd/grillode",
   "author": "Stephen McDonald <steve@jupo.org> (http://jupo.org)",
   "dependencies": {

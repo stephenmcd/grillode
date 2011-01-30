@@ -2,8 +2,8 @@
 express  = require "express"
 io       = require "socket.io"
 settings = require "./settings"
+uid      = (require "connect").utils.uid
 utils    = require "./utils"
-
 
 # Convenience method for removing an item from an array.
 Array.prototype.remove = (item) -> 
@@ -84,7 +84,7 @@ app.get "/rooms", (req, res) ->
 # Starts a matchup room - a randomly named private room that goes into 
 # the matchup list while waiting for someone else to join.
 app.get "/wait", (req, res) ->
-    room = utils.uid settings.MAX_ROOMNAME_LENGTH
+    room = uid settings.MAX_ROOMNAME_LENGTH
     res.redirect "/rooms/#{room}"
 
 # Join the earliest created dynamic room someone is waiting in, eg first in 

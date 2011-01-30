@@ -65,7 +65,3 @@ exports.stripTags = (html="", allowed={}) ->
         (buildOne part for part in parts).join("")
 
     buildAll handler.dom
-
-
-# Expose connect's uid function which is available as an express dependency.
-exports.uid = (require "connect").utils.uid

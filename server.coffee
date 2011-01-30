@@ -2,12 +2,12 @@
 coffee     = require "coffee-script"
 express    = require "express"
 fs         = require "fs"
+html       = require "./html"
 io         = require "socket.io"
 markdown   = (require "node-markdown").Markdown
 path       = require "path"
 settings   = require "./settings"
 uid        = (require "connect").utils.uid
-utils      = require "./utils"
 
 
 # Convenience method for removing an item from an array.
@@ -143,9 +143,9 @@ socket.on "connection", (client) ->
             client.room = room
             client.addr = client.request.socket.remoteAddress
         else if data.message? and client.room? and rooms[client.room]?
-            text = utils.stripTags data.message.trim()
+            text = html.strip data.message.trim()
             text = text.substr 0, settings.MAX_USERNAME_LENGTH
-            html = utils.stripTags (markdown data.message.trim()), 
+            html = html.strip (markdown data.message.trim()), 
                                     settings.ALLOWED_TAGS
             room = client.room
             addr = client.addr

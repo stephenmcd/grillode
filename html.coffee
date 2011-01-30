@@ -2,7 +2,7 @@
 htmlparser = require "htmlparser"
 
 
-exports.strip = (html="", allowed={}) -> 
+exports.stripTags = (html="", allowed={}) -> 
     ###
     Strips the given HTML string of all tags, other than those 
     specified in the ``allowed`` param, which should be in the 

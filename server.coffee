@@ -1,9 +1,13 @@
 
-express  = require "express"
-io       = require "socket.io"
-settings = require "./settings"
-uid      = (require "connect").utils.uid
-utils    = require "./utils"
+coffee     = require "coffee-script"
+express    = require "express"
+fs         = require "fs"
+io         = require "socket.io"
+path       = require "path"
+settings   = require "./settings"
+uid        = (require "connect").utils.uid
+utils      = require "./utils"
+
 
 # Convenience method for removing an item from an array.
 Array.prototype.remove = (item) -> 
@@ -42,7 +46,7 @@ app = express.createServer()
 app.use express.bodyDecoder()
 if settings.LOGGING
     app.use express.logger()
-app.use express.staticProvider root: (require "path").join __dirname, "public"
+app.use express.staticProvider root: path.join __dirname, "public"
 app.set "view options", locals: i: 0
 app.register ".coffee", require "coffeekup"
 
@@ -106,8 +110,15 @@ app.get "/random", (req, res) ->
 
 # Hosts the client-side Coffeescript converting it to Javascript.
 app.get "/client.coffee", (req, res) ->
-    res.header "Content-Type", "text/plain"
-    res.send utils.coffeeCompile "client.coffee"
+    fs.readFile (path.join __dirname, "client.coffee"), (err, data) ->
+        if not err
+            try
+                data = coffee.compile String data
+            catch err
+        if err
+            data = "alert(\"#{err}\");"
+        res.header "Content-Type", "text/plain"
+        res.send data
 
 app.listen settings.PORT
 

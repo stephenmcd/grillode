@@ -1,18 +1,5 @@
 
-coffee     = require "coffee-script"
-fs         = require "fs"
 htmlparser = require "htmlparser"
-path       = require "path"
-
-
-exports.coffeeCompile = (file) ->
-    ###
-    Returns the given coffee-script filename as a compiled Javascript string.
-    ###
-    try
-        coffee.compile String (fs.readFileSync path.join __dirname, file)
-    catch error
-        "alert(\"#{error}\");"
 
 
 exports.stripTags = (html="", allowed={}) -> 

@@ -36,3 +36,6 @@ p {margin:10px; padding:0;}
 #error {color:#f00; font-weight:bold; margin:20px 10px;}
 
 code {font-family:monospace;}
+
+.about pre {padding:20px; background:#eee;}
+.about ul {list-style-type:disc; margin:30px;}

@@ -74,6 +74,7 @@ The following URLs are provided which cater for the various modes described:
   * `/wait` - Wait for someone
   * `/match` - Join someone waiting
   * `/random` - Random match up
+  * `/about` - Renders this README file
 
 [CoffeeScript]: http://coffeescript.org/
 [Node.js]: http://nodejs.org/

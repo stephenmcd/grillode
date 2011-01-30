@@ -55,6 +55,13 @@ app.register ".coffee", require "coffeekup"
 app.get "/", (req, res) -> 
     res.redirect(settings.DEFAULT_URL)
     
+# About - parses README.md and pass it to the empty template.
+app.get "/about", (req, res) -> 
+    fs.readFile (path.join __dirname, "README.md"), (err, data) ->
+        about = (markdown String data).replace "<h1>Overview</h1>", ""
+        context = title: "About", about: about
+        res.render "about.coffee", context: context
+    
 # Form for adding a named room.
 app.all "/rooms/add", (req, res) -> 
     room = message = ""

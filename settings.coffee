@@ -43,4 +43,5 @@ exports.LOGGING = on
 # /wait - Wait for someone
 # /match - Join someone waiting
 # /random - Random match up
+# /about - Renders README.md
 exports.DEFAULT_URL = "/rooms"

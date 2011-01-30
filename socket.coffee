@@ -37,13 +37,13 @@ exports.handler = (client) ->
                     process.rooms[room].dynamic = yes
                 else
                     return
+            client.start = new Date()
             client.room = room
             client.addr = client.request.socket.remoteAddress
         else if data.message? and client.room? and process.rooms[client.room]?
-            text = stripTags data.message.trim()
-            text = text.substr 0, settings.MAX_USERNAME_LENGTH
-            html = stripTags (markdown data.message.trim()), 
-                              settings.ALLOWED_TAGS
+            message = data.message.trim()
+            text = (stripTags message).substr 0, settings.MAX_USERNAME_LENGTH
+            html = stripTags (markdown message), settings.ALLOWED_TAGS
             room = client.room
             addr = client.addr
             # Bail out if any data is missing.

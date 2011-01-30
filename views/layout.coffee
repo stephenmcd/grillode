@@ -12,6 +12,7 @@ html ->
             li "/", -> a href: "/",           -> "Rooms"
             li "/", -> a href: "/rooms/add",  -> "Add room"
             li "/", -> a href: "/wait",       -> "Wait"
+            li "/", -> a href: "/waiting",    -> "View waiting queue"
             li "/", -> a href: "/match",      -> "Join someone waiting"
-            li "/", -> a href: "/random",     -> "Random"
+            li "/", -> a href: "/random",     -> "Random matchup"
         @body

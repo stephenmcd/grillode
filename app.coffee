@@ -17,6 +17,7 @@ app.use express.staticProvider root: path.join __dirname, "public"
 app.set "view options", locals: i: 0
 app.register ".coffee", require "coffeekup"
 
+
 # Homepage - redirect to the default URL.
 app.get "/", (req, res) -> 
     res.redirect(settings.DEFAULT_URL)
@@ -46,7 +47,7 @@ app.get "/rooms/:room", (req, res) ->
     private = room not in settings.ROOMS and not settings.ADDABLE_ROOMS_VISIBLE
     title = if private then "Private" else room
     context = title: title, room: room
-    res.render "room.coffee", layout: false, context: context
+    res.render "room.coffee", context: context, layout: false
 
 # Lists rooms and users in each room.
 app.get "/rooms", (req, res) -> 
@@ -62,8 +63,15 @@ app.get "/rooms", (req, res) ->
 # Starts a matchup room - a randomly named private room that goes into 
 # the matchup list while waiting for someone else to join.
 app.get "/wait", (req, res) ->
-    room = uid settings.MAX_ROOMNAME_LENGTH
+    room = uid settings.MAX_ROOMNAME_LENGTH, layout: false
     res.redirect "/rooms/#{room}"
+
+# Lists the users waiting in matchup rooms.
+app.get "/waiting", (req, res) ->
+    since = (date) -> Math.ceil ((new Date).getTime() - date.getTime()) / 60000
+    clients = (process.rooms[room][0] for room in process.matchups)
+    context = title: "Waiting", clients: clients, since: since
+    res.render "waiting.coffee", context: context
 
 # Join the earliest created dynamic room someone is waiting in, eg first in 
 # the matchup list.

@@ -72,6 +72,7 @@ The following URLs are provided which cater for the various modes described:
   * `/rooms` - List all rooms
   * `/rooms/add` - Add a room
   * `/wait` - Wait for someone
+  * `/waiting` - View the waiting queue
   * `/match` - Join someone waiting
   * `/random` - Random match up
   * `/about` - Renders this README file

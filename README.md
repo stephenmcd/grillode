@@ -35,7 +35,7 @@ from within the Grillode directory, with an optional port number:
     $ coffee server.coffee 8000
     
 To allow the server to continue to run detached from the terminal 
-session, you can run the same command using `nohup]:
+session, you can run the same command using `nohup`:
 
     $ nohup coffee server.coffee 8000 &
     

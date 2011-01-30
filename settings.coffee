@@ -2,12 +2,19 @@
 
 # Tag/attribs mapping of allowed tags and attributes.
 exports.ALLOWED_TAGS = 
-    b       : []
-    i       : [] 
-    img     : ["src"]
-    a       : ["href"] 
-    center  : []
-    font    : ["face", "color", "size"]
+    b            : []
+    strong       : [] 
+    code         : [] 
+    hr           : [] 
+    ul           : [] 
+    li           : [] 
+    i            : []
+    em           : [] 
+    blockquote   : [] 
+    img          : ["src"]
+    a            : ["href"] 
+    center       : []
+    font         : ["face", "color", "size"]
 
 # Maximum user name length.
 exports.MAX_USERNAME_LENGTH = 30

@@ -3,6 +3,7 @@ coffee     = require "coffee-script"
 express    = require "express"
 fs         = require "fs"
 io         = require "socket.io"
+markdown   = (require "node-markdown").Markdown
 path       = require "path"
 settings   = require "./settings"
 uid        = (require "connect").utils.uid
@@ -53,7 +54,7 @@ app.register ".coffee", require "coffeekup"
 # Homepage - redirect to the default URL.
 app.get "/", (req, res) -> 
     res.redirect(settings.DEFAULT_URL)
-
+    
 # Form for adding a named room.
 app.all "/rooms/add", (req, res) -> 
     room = message = ""
@@ -144,7 +145,8 @@ socket.on "connection", (client) ->
         else if data.message? and client.room? and rooms[client.room]?
             text = utils.stripTags data.message.trim()
             text = text.substr 0, settings.MAX_USERNAME_LENGTH
-            html = utils.stripTags data.message.trim(), settings.ALLOWED_TAGS
+            html = utils.stripTags (markdown data.message.trim()), 
+                                    settings.ALLOWED_TAGS
             room = client.room
             addr = client.addr
             # Bail out if any data is missing.

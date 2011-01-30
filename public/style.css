@@ -34,3 +34,5 @@ p {margin:10px; padding:0;}
 #button, #leave {padding:5px 15px; margin-left:10px; cursor:pointer;}
 
 #error {color:#f00; font-weight:bold; margin:20px 10px;}
+
+code {font-family:monospace;}

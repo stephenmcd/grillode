@@ -21,6 +21,7 @@ using [Node Package Manager] (NPM).
   * [coffee-script] >= 1.0.0
   * [coffeekup] >= 0.2.2
   * [htmlparser] >= 1.7.3
+  * [node-markdown] >= 0.1.0
 
 With Node.js and NPM installed, you can install all of the above 
 dependencies by running the following command from within the Grillode 
@@ -85,3 +86,4 @@ The following URLs are provided which cater for the various modes described:
 [coffee-script]: http://coffeescript.org/
 [coffeekup]: http://coffeekup.org/
 [htmlparser]: http://github.com/tautologistics/node-htmlparser
+[node-markdown]: http://github.com/andris9/node-markdown

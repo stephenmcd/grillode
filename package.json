@@ -9,5 +9,6 @@
     "coffee-script": ">= 1.0.0",
     "coffeekup": ">= 0.2.2",
     "htmlparser": ">= 1.7.3",
+    "node-markdown": ">= 0.1.0",
   }
 }

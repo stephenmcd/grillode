@@ -67,15 +67,5 @@ exports.stripTags = (html="", allowed={}) ->
     buildAll handler.dom
 
 
-exports.time = -> 
-    ###
-    Return a timestamp in the format: HH:MM:SS
-    ###
-    date = new Date()
-    parts = [date.getHours(), date.getMinutes(), date.getSeconds()]
-    pad = (s) -> if (String s).length is 1 then "0#{s}" else s
-    (pad part for part in parts).join(":")
-
-
 # Expose connect's uid function which is available as an express dependency.
 exports.uid = (require "connect").utils.uid

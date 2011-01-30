@@ -25,14 +25,15 @@ matchups = []
 
 # Send the given message string to all clients for the given room.
 broadcast = (room, message, addr) -> 
+    datetime = (new Date).toUTCString()
+    time = (datetime.split(" ").filter (s) -> (s.indexOf ":") isnt -1)[0]
     data = 
         users: c.name for c in rooms[room]
-        message: "[#{utils.time()}] #{message}"
+        message: "[#{time()}] #{message}"
     data = JSON.stringify data
     c.send data for c in rooms[room]    
     if settings.LOGGING
-        timestamp = (new Date).toUTCString()
-        output = "#{addr} - - [#{timestamp}] \"#{room} #{message}\" - - - -\n"
+        output = "#{addr} - - [#{datetime}] \"#{room} #{message}\" - - - -\n"
         process.stdout.write output
 
 

@@ -6,8 +6,12 @@ $ ->
     # Write incoming messages to the page and scroll.
     socket.on "message", (data) ->
         data = JSON.parse data
+        win = $ window
+        doc = $ window.document
+        bottom = win.scrollTop() + win.height() is doc.height()
         $("#messages").append "<p>#{data.message}</p>"
-        window.scrollBy 0, 10000
+        if bottom
+            window.scrollBy 0, 10000
         if data.users?
             heading = "<li><h2>Users</h2> (#{data.users.length})</li>"
             users = ("<li>#{user}</li>" for user in data.users).join("")

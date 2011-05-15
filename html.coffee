@@ -2,14 +2,14 @@
 htmlparser = require "htmlparser"
 
 
-exports.stripTags = (html="", allowed={}) -> 
+exports.stripTags = (html="", allowed={}) ->
     ###
-    Strips the given HTML string of all tags, other than those 
-    specified in the ``allowed`` param, which should be in the 
+    Strips the given HTML string of all tags, other than those
+    specified in the ``allowed`` param, which should be in the
     format: {tag1: [allowedAttribute1, allowedAttribute2], tag2: []}
     ###
-    
-    escapeHtml = (html) -> 
+
+    escapeHtml = (html) ->
         ###
         Replace brackets and quotes with their HTML entities.
         ###
@@ -25,10 +25,10 @@ exports.stripTags = (html="", allowed={}) ->
     parser = new htmlparser.Parser(handler);
     parser.parseComplete(html);
 
-    buildAll = (parts) -> 
+    buildAll = (parts) ->
         ###
-        Takes a list of dom nodes and returns each node as a string 
-        if it's text or an allowed tag. Called recursively on the 
+        Takes a list of dom nodes and returns each node as a string
+        if it's text or an allowed tag. Called recursively on the
         node's child nodes.
         ###
 

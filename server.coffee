@@ -8,9 +8,9 @@ settings = require "./settings"
 process.rooms = {}
 process.rooms[room] = [] for room in settings.ROOMS
 
-# Global queue of room names for random matchups. Added to when a user 
-# starts a new room, and pulled from when another user joins that room. 
-# Allows for chatroulette style random matchups, or a customer support 
+# Global queue of room names for random matchups. Added to when a user
+# starts a new room, and pulled from when another user joins that room.
+# Allows for chatroulette style random matchups, or a customer support
 # type of service.
 process.matchups = []
 

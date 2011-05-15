@@ -1,18 +1,18 @@
 
 
 # Tag/attribs mapping of allowed tags and attributes.
-exports.ALLOWED_TAGS = 
+exports.ALLOWED_TAGS =
     b            : []
-    strong       : [] 
-    code         : [] 
-    hr           : [] 
-    ul           : [] 
-    li           : [] 
+    strong       : []
+    code         : []
+    hr           : []
+    ul           : []
+    li           : []
     i            : []
-    em           : [] 
-    blockquote   : [] 
+    em           : []
+    blockquote   : []
     img          : ["src"]
-    a            : ["href"] 
+    a            : ["href"]
     center       : []
     font         : ["face", "color", "size"]
 

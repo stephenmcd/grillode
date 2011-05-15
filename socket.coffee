@@ -5,27 +5,27 @@ settings   = require "./settings"
 
 
 # Convenience method for removing an item from an array.
-Array.prototype.remove = (item) -> 
+Array.prototype.remove = (item) ->
     if item in this
         index = this.indexOf item
         this.splice index, 1
 
 # Send the given message string to all clients for the given room.
-broadcast = (room, message, addr) -> 
+broadcast = (room, message, addr) ->
     datetime = (new Date).toUTCString()
     time = (datetime.split(" ").filter (s) -> (s.indexOf ":") isnt -1)[0]
-    data = 
+    data =
         users: c.name for c in process.rooms[room]
         message: "[#{time}] #{message}"
     data = JSON.stringify data
-    c.send data for c in process.rooms[room]    
+    c.send data for c in process.rooms[room]
     if settings.LOGGING
         output = "#{addr} - - [#{datetime}] \"#{room} #{message}\" - - - -\n"
         process.stdout.write output
 
 # Passed to socket.io in server.coffee to handle each socket connection.
 exports.handler = (client) ->
-    
+
     client.on "message", (data) ->
         data = JSON.parse data
         if data.room? and not client.room?
@@ -59,7 +59,7 @@ exports.handler = (client) ->
                     message = message: "Name is in use, please enter another"
                     client.send JSON.stringify message
                 else
-                    # Add the client to the room, set the client's name 
+                    # Add the client to the room, set the client's name
                     # and send the join message.
                     empty = process.rooms[room].length is 0
                     if process.rooms[room]?.dynamic and empty
@@ -79,17 +79,17 @@ exports.handler = (client) ->
         users = process.rooms[room]?.length
         addr = client.addr
         if joined
-            # Client had joined a room - send the leave message and 
+            # Client had joined a room - send the leave message and
             # remove the client from the room.
             process.rooms[room].remove client
             broadcast room, "#{displayName} leaves", addr
         if joined and room in process.matchups
-            # Client created the matchup room without anyone else 
+            # Client created the matchup room without anyone else
             # joining it, so remove it from the matchup list.
             process.matchups.remove room
         if not joined and dynamic and users is 1
-            # Client was assigned to a matchup room but didn't 
-            # actually join, so return the room to the front of 
+            # Client was assigned to a matchup room but didn't
+            # actually join, so return the room to the front of
             # the matchup list.
             process.matchups.unshift room
         if dynamic and users is 0

@@ -19,18 +19,18 @@ app.register ".coffee", require "coffeekup"
 
 
 # Homepage - redirect to the default URL.
-app.get "/", (req, res) -> 
+app.get "/", (req, res) ->
     res.redirect(settings.DEFAULT_URL)
-    
+
 # About - parses README.md and pass it to the empty template.
-app.get "/about", (req, res) -> 
+app.get "/about", (req, res) ->
     fs.readFile (path.join __dirname, "README.md"), (err, data) ->
         about = (markdown String data).replace "<h1>Overview</h1>", ""
         context = title: "About", about: about
         res.render "about.coffee", context: context
-    
+
 # Form for adding a named room.
-app.all "/rooms/add", (req, res) -> 
+app.all "/rooms/add", (req, res) ->
     room = message = ""
     if req.body?.room?
         room = req.body.room.trim().substr 0, settings.MAX_ROOMNAME_LENGTH
@@ -50,7 +50,7 @@ app.get "/rooms/:room", (req, res) ->
     res.render "room.coffee", context: context, layout: false
 
 # Lists rooms and users in each room.
-app.get "/rooms", (req, res) -> 
+app.get "/rooms", (req, res) ->
     if settings.ADDABLE_ROMS_VISIBLE
         visibleRooms = process.rooms
     else
@@ -60,7 +60,7 @@ app.get "/rooms", (req, res) ->
     context = title: "Home", rooms: visibleRooms
     res.render "rooms.coffee", context: context
 
-# Starts a matchup room - a randomly named private room that goes into 
+# Starts a matchup room - a randomly named private room that goes into
 # the matchup list while waiting for someone else to join.
 app.get "/wait", (req, res) ->
     room = uid settings.MAX_ROOMNAME_LENGTH, layout: false
@@ -73,7 +73,7 @@ app.get "/waiting", (req, res) ->
     context = title: "Waiting", clients: clients, since: since
     res.render "waiting.coffee", context: context
 
-# Join the earliest created dynamic room someone is waiting in, eg first in 
+# Join the earliest created dynamic room someone is waiting in, eg first in
 # the matchup list.
 app.get "/match", (req, res) ->
     if room = process.matchups.shift()
@@ -82,7 +82,7 @@ app.get "/match", (req, res) ->
         context = title: "Match"
         res.render "no_match.coffee", context: context
 
-# Chatroulette style matchup - if there is a room in the matchup list, join 
+# Chatroulette style matchup - if there is a room in the matchup list, join
 # it, otherwise create a dynamic room that will go into the matchup list.
 app.get "/random", (req, res) ->
     if room = process.matchups.shift()
@@ -101,5 +101,5 @@ app.get "/client.coffee", (req, res) ->
             data = "alert(\"#{err}\");"
         res.header "Content-Type", "text/plain"
         res.send data
-        
+
 exports.app = app

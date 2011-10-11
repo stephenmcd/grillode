@@ -5,8 +5,8 @@ html ->
         title "#{@title} | Grillode"
         link rel: "stylesheet", href: "/style.css"
         script src: "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
+        script src: "http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"
         script src: "/socket.io/socket.io.js"
-        script src: "/json2.js"
         script src: "/client.coffee"
 
     body class: "room", ->

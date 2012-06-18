@@ -1,4 +1,4 @@
-Created by [Stephen McDonald][http://twitter.com/stephen_mcd]
+Created by [Stephen McDonald](http://twitter.com/stephen_mcd)
 
 Overview
 ========

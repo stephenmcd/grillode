@@ -16,7 +16,7 @@ Installation
 
 Grillode is available in source form on both [Github] and [Bitbucket].
 Grillode also makes use of the following libraries which can be installed 
-using [Node Package Manager] (NPM).
+using [NPM].
 
   * [express] >= 1.0.3
   * [socket.io] >= 0.6.8
@@ -84,7 +84,7 @@ The following URLs are provided which cater for the various modes described:
 [BSD licensed]: http://www.linfo.org/bsdlicense.html
 [Github]: http://github.com/stephenmcd/grillode/
 [Bitbucket]: http://bitbucket.org/stephenmcd/grillode/
-[Node Package Manager]: http://npmjs.org/
+[NPM]: http://npmjs.org/
 [express]: http://expressjs.com/
 [socket.io]: http://socket.io/
 [coffee-script]: http://coffeescript.org/
